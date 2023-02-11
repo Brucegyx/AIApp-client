@@ -28,14 +28,26 @@ async function handleSend (event) {
   conversationContianer.innerHTML += createBlock(false, inputData.get("user-input") );
   form.reset();
 
-  const askAPI = "http://localhost:8080/api/ask";
-  const answer = await fetch(askAPI, {method: "POST"})
-    .then(response => response.json())
-    .then(data => JSON.stringify(data))
+  const askAPI = "http://localhost:8080/api/textcompletion";
+  const answer = await fetch(askAPI, {
+    method: "POST", 
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      prompt: inputData.get("user-input")
+    })})
+
+  if (answer.ok) {
+    const result = await answer.json();
+    const newUId = generateUId();
+    conversationContianer.innerHTML += createBlock(true, result.text, newUId);
+    conversationContianer.scrollTop = conversationContianer.scrollHeight;
+
+  }
+  else {
+    const error = await answer.text();
+    console.log("Error"+ error);
+  }
   // msg block for AI
-  const newUId = generateUId();
-  conversationContianer.innerHTML += createBlock(true, answer, newUId);
-  conversationContianer.scrollTop = conversationContianer.scrollHeight - 10;
 }
 
 form.addEventListener("submit", (e) => handleSend(e));
