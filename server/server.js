@@ -29,6 +29,7 @@ router.post('/textcompletion', async(req, res, next) => {
       presence_penalty: 0,
     });
     console.log(response.data.choices);
+    // respond with the first respond choice from Davinci3 in JSON 
     res.status(200).send(response.data.choices[0]);
 
   } catch (err) {
