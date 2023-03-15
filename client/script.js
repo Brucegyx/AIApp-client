@@ -28,25 +28,24 @@ async function handleSend (event) {
   conversationContianer.innerHTML += createBlock(false, inputData.get("user-input") );
   form.reset();
 
-  const askAPI = "http://localhost:8080/api/textcompletion";
-  const answer = await fetch(askAPI, {
+  const askAPI = "http://localhost:8080/api/chat-completion";
+  await fetch(askAPI, {
     method: "POST", 
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
       prompt: inputData.get("user-input")
-    })})
-
-  if (answer.ok) {
-    const result = await answer.json();
+    })}
+  )
+  .then(response => response.json())
+  .then( aiResult => {
     const newUId = generateUId();
-    conversationContianer.innerHTML += createBlock(true, result.text, newUId);
+    conversationContianer.innerHTML += createBlock(true, aiResult["content"], newUId);
     conversationContianer.scrollTop = conversationContianer.scrollHeight;
-
-  }
-  else {
-    const error = await answer.text();
+    }
+  )
+  .catch( error => {
     console.log("Error"+ error);
-  }
+  })
   // msg block for AI
 }
 

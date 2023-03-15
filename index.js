@@ -9,8 +9,10 @@ const cors = require('cors');
 
 app.use(express.static(path.join(__dirname, '/client')));
 app.use(express.json());
-app.use('/api',router);
+//router.use(cors());
 app.use(cors());
+app.use('/api',router);
+
 app.all('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '/client/index.html'));
 });
